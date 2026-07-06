@@ -334,66 +334,42 @@
   };
 
   const submitToGoogleSheets = async (payload) => {
-    if (!isConfiguredScriptUrl()) {
-      await new Promise((resolve) => window.setTimeout(resolve, 850));
-      return { success: true, localPreview: true };
-    }
 
-    const response = await fetch(SCRIPT_URL.trim(), {
-      method: "POST",
-      body: payload
+    const response = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams(payload)
     });
 
-    const text = await response.text();
-    let result = null;
+    const result = await response.json();
 
-    if (text) {
-      try {
-        result = JSON.parse(text);
-      } catch (error) {
-        result = { success: response.ok };
-      }
+    if (!result.success) {
+        throw new Error(result.message || "Submission Failed");
     }
 
-    if (!response.ok || (result && result.success === false)) {
-      const message = result && result.message ? result.message : "Unable to submit application. Please try again.";
-      throw new Error(message);
-    }
-
-    return result || { success: true };
-  };
+    return result;
+};
 
   const buildSubmissionPayload = () => {
+
     const values = new FormData(form);
-    const payload = new FormData();
-    const now = new Date();
-    const date = now.toLocaleDateString("en-IN", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit"
-    });
-    const time = now.toLocaleTimeString("en-IN", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false
-    });
-    const screenshot = fileInput.files[0];
 
-    payload.append("name", String(values.get("name") || "").trim());
-    payload.append("phone", String(values.get("phone") || "").trim());
-    payload.append("email", String(values.get("email") || "").trim());
-    payload.append("city", String(values.get("city") || "").trim());
-    payload.append("occupation", String(values.get("occupation") || "").trim());
-    payload.append("plan", String(values.get("plan") || "").trim());
-    payload.append("amount", String(values.get("amount") || "").trim());
-    payload.append("paymentScreenshotName", screenshot ? screenshot.name : "");
-    payload.append("date", date);
-    payload.append("time", time);
-    payload.append("status", "Pending");
-
-    return payload;
-  };
+    return {
+        name: values.get("name"),
+        phone: values.get("phone"),
+        email: values.get("email"),
+        city: values.get("city"),
+        occupation: values.get("occupation"),
+        plan: values.get("plan"),
+        amount: values.get("amount"),
+        paymentScreenshotName: fileInput.files.length
+            ? fileInput.files[0].name
+            : "",
+        status: "Pending"
+    };
+};
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
