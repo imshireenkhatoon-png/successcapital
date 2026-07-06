@@ -330,7 +330,7 @@
     }
 
     const url = SCRIPT_URL.trim();
-    return Boolean(url) && url !== "https://script.google.com/macros/s/AKfycbyBNEgZtSKjLiBDXDk58_sb3r1xhhcEc8GVjV3DTSZkN3Ho6_Mvt70AEPxqO0ndlIXDnQ/exec";
+    return Boolean(url) && url !== "https://script.google.com/macros/s/AKfycbyBNEgZtSKjLiBDXDk58_sb3r1xhhcEc8GVjV3DTSZkN3Ho6_Mvt70AEPxqO0ndlIXDnQ/exechttps://script.google.com/macros/s/AKfycbyBNEgZtSKjLiBDXDk58_sb3r1xhhcEc8GVjV3DTSZkN3Ho6_Mvt70AEPxqO0ndlIXDnQ/exec";
   };
 
   const submitToGoogleSheets = async (payload) => {
