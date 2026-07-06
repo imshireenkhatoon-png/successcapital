@@ -1,4 +1,4 @@
-const SHEET_NAME = 'Success Capital Leads';
+const SHEET_NAME = 'SuccessCapitalApplication';
 const HEADERS = [
   'Timestamp',
   'Name',
