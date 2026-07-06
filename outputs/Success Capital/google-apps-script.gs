@@ -13,31 +13,27 @@ const HEADERS = [
 ];
 
 function doPost(e) {
-  try {
-    const sheet = getLeadSheet_();
-    const data = e && e.parameter ? e.parameter : {};
-    const timestamp = buildTimestamp_(data.date, data.time);
 
-    sheet.appendRow([
-      timestamp,
-      data.name || '',
-      data.phone || '',
-      data.email || '',
-      data.city || '',
-      data.occupation || '',
-      data.plan || '',
-      data.amount || '',
-      data.paymentScreenshotName || '',
-      data.status || 'Pending'
-    ]);
+  var sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getSheetByName("SuccessCapitalApplication");
 
-    return jsonResponse_({ success: true });
-  } catch (error) {
-    return jsonResponse_({
-      success: false,
-      message: error && error.message ? error.message : 'Submission failed'
-    });
-  }
+  sheet.appendRow([
+    new Date(),
+    e.parameter.name,
+    e.parameter.phone,
+    e.parameter.email,
+    e.parameter.city,
+    e.parameter.occupation,
+    e.parameter.plan,
+    e.parameter.amount,
+    e.parameter.paymentScreenshotName,
+    e.parameter.status
+  ]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ success: true }))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function getLeadSheet_() {
